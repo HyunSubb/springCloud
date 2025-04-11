@@ -1,0 +1,15 @@
+server:
+  port: 8085 # FrontApplication의 포트 번호
+
+spring:
+  application:
+    name: front-application # 프론트 애플리케이션 이름
+
+eureka:
+  client:
+    fetch-registry: true # 서비스 목록 가져오기
+    register-with-eureka: true # Eureka에 등록
+    service-url:
+      defaultZone: http://localhost:8761/eureka # Eureka 서버 URL
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id}:${random.value} # 유레카에 등록될 인스턴스 ID

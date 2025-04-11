@@ -1,0 +1,47 @@
+server:
+  port: 8000 # API Gateway가 실행될 포트 번호
+
+eureka:
+  client:
+    fetch-registry: true # 유레카 서버에서 서비스 목록을 가져옴
+    register-with-eureka: true # 유레카 서버에 서비스를 등록함
+    service-url:
+      defaultZone: http://localhost:8761/eureka # 유레카 서버의 기본 URL
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id}:${random.value} # 유레카에 등록될 인스턴스 ID
+
+spring:
+  application:
+    name: apigateway-service # API Gateway의 애플리케이션 이름
+  cloud:
+    gateway:
+      routes:
+        - id: first-service # 라우팅 ID
+          #          uri: http://localhost:8081/ # 직접 IP 주소와 포트로 연결 (Eureka 사용하지 않을 때)
+          uri: lb://my-first-service # 유레카에 등록되어 있는 서비스 / 유레카의 로드 밸런싱 기능을 사용하여 서비스에 연결
+          predicates:
+            - Path=/first-service/** # 요청 경로가 /first-service로 시작할 때 이 라우팅을 사용
+          filters:
+            - AddRequestHeader=first-request, first-request-header2 # 요청에 헤더 추가
+            - AddResponseHeader=first-response, first-response-header2 # 응답에 헤더 추가
+          # ------------------------------------------------------------------------------------------------------------
+        - id: second-service # 라우팅 ID
+          #          uri: http://localhost:8082/ # 직접 IP 주소와 포트로 연결 (Eureka 사용하지 않을 때)
+          uri: lb://my-second-service # 유레카에 등록되어 있는 서비스 / 유레카의 로드 밸런싱 기능을 사용하여 서비스에 연결
+          predicates:
+            - Path=/second-service/** # 요청 경로가 /second-service로 시작할 때 이 라우팅을 사용
+          filters:
+            - AddRequestHeader=second-request, second-request-header2 # 요청에 헤더 추가
+            - AddResponseHeader=second-response, second-response-header2 # 응답에 헤더 추가
+          # ------------------------------------------------------------------------------------------------------------
+        - id: my-blog-api # 라우팅 ID
+          #          uri: http://localhost:8083/ # 직접 IP 주소와 포트로 연결 (Eureka 사용하지 않을 때)
+          uri: lb://my-blog-api # 유레카에 등록되어 있는 서비스 / 유레카의 로드 밸런싱 기능을 사용하여 서비스에 연결
+          predicates:
+            - Path=/api/v1/blogs/** # 요청 경로가 /my-blog로 시작할 때 이 라우팅을 사용
+          # ------------------------------------------------------------------------------------------------------------
+        - id: user-service # 라우팅 ID
+          #          uri: http://localhost:8089/ # 직접 IP 주소와 포트로 연결 (Eureka 사용하지 않을 때)
+          uri: lb://user-service # 유레카에 등록되어 있는 서비스 / 유레카의 로드 밸런싱 기능을 사용하여 서비스에 연결
+          predicates:
+            - Path=/user-service/** # 요청 경로가 /user-service로 시작할 때 이 라우팅을 사용

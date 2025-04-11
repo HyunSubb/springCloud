@@ -1,0 +1,15 @@
+server:
+  port: 8082 # 서비스가 실행될 포트 번호
+
+spring:
+  application:
+    name: my-second-service # 서비스의 애플리케이션 이름
+
+eureka:
+  client:
+    fetch-registry: true # 유레카 서버에서 서비스 목록을 가져옴
+    register-with-eureka: true # 유레카 서버에 서비스를 등록함
+    service-url:
+      defaultZone: http://localhost:8761/eureka # 유레카 서버의 기본 URL
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id}:${random.value} # 유레카에 등록될 인스턴스 ID

@@ -1,0 +1,11 @@
+server:
+  port: 8761 # 유레카 서버가 실행될 포트 번호
+
+spring:
+  application:
+    name: discoveryservice # 유레카 서버의 애플리케이션 이름
+
+eureka:
+  client:
+    register-with-eureka: false # 유레카 서버 자신을 유레카에 등록하지 않음
+    fetch-registry: false # 유레카 서버 자신이 다른 서비스 목록을 가져오지 않음

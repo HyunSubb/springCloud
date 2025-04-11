@@ -1,0 +1,84 @@
+server:
+  port: 8083 # 서비스가 실행될 포트 번호
+
+blog:
+  test: true
+
+logging:
+  level:
+    root: debug
+    org:
+      hibernate:
+        orm:
+          jdbc:
+            bind: trace
+        sql: debug
+
+      springframework:
+        transaction:
+          interceptor: trace
+          #Security관련 exception 디버깅 하기위해서 반드시 설정해야함.
+        security: trace
+
+spring:
+  application:
+    name: my-blog-api # 서비스의 애플리케이션 이름
+  jpa:
+    open-in-view: false
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        use_sql_comments: true
+        show_sql: true
+        hbm2ddl:
+          auto: create
+        highlight_sql: true
+        auto_quote_keyword: true
+
+
+  datasource:
+    type: org.apache.commons.dbcp2.BasicDataSource
+    dbcp2:
+      min-idle: 3
+      max-idle: 3
+      max-total: 3
+      initial-size: 3
+      driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:blogdb  # ✅ H2 메모리 DB 추가
+    username: sa
+    password:
+
+  h2:
+    console:
+      enabled: true  # ✅ H2 웹 콘솔 활성화
+      path: /h2-console
+      settings:
+        trace: false
+        web-allow-others: true  # 외부 접속 허용 (테스트용)
+
+decorator:
+  datasource:
+    datasource-proxy:
+      logging: slf4j
+      query:
+        enable-logging: true
+        log-level: DEBUG
+        logger-name:
+      slow-query:
+        enable-logging: true
+        log-level: WARN
+        logger-name:
+        threshold: 3
+      multiline: true
+      json-format: false
+      count-query: false
+
+eureka:
+  client:
+    fetch-registry: true # 유레카 서버에서 서비스 목록을 가져옴
+    register-with-eureka: true # 유레카 서버에 서비스를 등록함
+    service-url:
+      defaultZone: http://localhost:8761/eureka # 유레카 서버의 기본 URL
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id}:${random.value} # 유레카에 등록될 인스턴스 ID

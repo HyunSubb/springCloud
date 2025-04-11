@@ -1,0 +1,57 @@
+logging:
+  level:
+    root: debug
+    org:
+      hibernate:
+        orm:
+          jdbc:
+            bind: trace
+        sql: debug
+
+      springframework:
+        transaction:
+          interceptor: trace
+          #Security관련 exception 디버깅 하기위해서 반드시 설정해야함.
+        security: trace
+
+greeting:
+  message: Welcome to the User Service!
+
+# ?? ??
+server:
+  port: 8089
+
+# ??????? ???
+spring:
+  application:
+    name: user-service
+
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:blogdb;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+
+    h2:
+      console:
+        enabled: true  # ✅ H2 웹 콘솔 활성화
+        path: /h2-console
+        settings:
+          trace: false
+          web-allow-others: true  # 외부 접속 허용 (테스트용)
+
+# ??? ????? ??
+# eureka.client.fetch-registry = true? EUREKA ????? ?????? ??? ????? ??? ???? ???? ????.
+# true? ????, ?? ? ??? ???? ?????.
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://127.0.0.1:8761/eureka # ? ?????(??? ??)? ??????? ????
+  instance:
+    instance-id: ${spring.cloud.client.hostname}:${{spring.application.intance_id}:${random.value}}
